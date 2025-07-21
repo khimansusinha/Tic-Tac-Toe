@@ -1,0 +1,44 @@
+
+Project Name: "Multiplayer Game Server Using Networking Sockets"
+
+========================
+Project Description:
+========================
+1. Build a multiplayer game server TIC-TAC-TOE in C using TCP/IP networking sockets.
+2. In this game 2 players connect over the network to play TIC_TAC_TOE game.
+3. Multiple games can be played in parallel i.e. "Game-1" can be played by "user-1" and "user-2" and in parallel a separate
+   "Game-2 can also be played by "user-3" and "user-4" and so on.
+4. Total 128 TIC-TAK-TOE games can be played in parallel over the network.
+5. One game is played between two players, so maximum possible total number of active player count is 256.
+
+==========================
+Key Features implemented:
+==========================
+1. Implementated a statefull multithreaded server program.
+2. The server tracks each game states using a state machine. It stores each game state inside a separate 2-D matrix of size 3X3.
+3. The server relays moves between players, determines the game result either it's Win, Lose or Draw and draws the game board.
+4. The server creates one worker thread to handle communication and relay moves between two players for one active game.
+5. When there are 128 active games at a time in that case server will be having 128 worker threads active at a time.
+6. If "Game-1" is happening between two players "P1" and "P2", then "P1" sends its move number between 0-9 to the server and
+   server worker thread validates the move and then sends move and player ID update to both the players followed by "TRN"
+   command to player "P2" to inform his turn.
+7. Input number between 0-8 for the move inside the board and 9 is to get total number of active users at currently.
+8. There are ten different commands sent by server to the players of an active game, to validate, relay and proceed the game:
+   "HLD": Hold till next player connected to the server
+   "SRT": Start the game
+   "TRN": Your turn to select the number between 0-9 to capture one of the cell of the game board.
+   "INV": Invalid move, retry with the correct move.
+   "CNT": Total number of active users at any point in time.
+   "UPD": Client updates its own board for the client ID and the move with the value 'X' or 'O'.
+   "WAT": Wait for other players move completion.
+   "WIN": You win game.
+   "LSE": You lost game.
+   "DRW": Game is draw.
+9. The server worker thread implements thread syncronization using mutex.
+10. The select call is getting used inside the server worker thread to get any event on the client sockets to do read/write
+   to the client sockets in real time.
+11. Server handles the Ctrl-C by defining signal handler for SIGINT.
+12. For one active game server creates two communication channel one with "Player1" and another with "Player2".
+13. The server implements error handling and game status messages. 
+14. Client and Server implements TCP/IP  for the connection.
+15. Server sends commands to players and players which are actually the clients responds accordingly.
